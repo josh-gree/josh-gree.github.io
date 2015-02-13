@@ -20,12 +20,12 @@
 &lt;p&gt;As is often the case with mathematical arguments the best strategy is to assume you already have the thing you want - the hope is that this assumption will give you what you want! Clearly this is a very circular argument however this is how we will proceed...&lt;/p&gt;
 &lt;p&gt;We are going to assume that their exists some median line which separates the positive samples from the negative samples, we will think of this as the centre of a road such that the positive samples are on the right hand side and the negative samples are on the left.&lt;/p&gt;
 &lt;div class="figure align-center"&gt;
-&lt;img alt="" src="./median_and_margin.png" /&gt;
+&lt;img alt="" src="images/median_and_margin.png" /&gt;
 &lt;/div&gt;
 &lt;p&gt;The width of this road should be as large as possible - this is what gives us confidence in our decision rule since we are aiming for the largest separation of the two sets.&lt;/p&gt;
 &lt;p&gt;Now we will introduce a vector &lt;span class="math"&gt;\(\mathbf{w}\)&lt;/span&gt; that will be constrained to be perpendicular to the median line of the road. The length of &lt;span class="math"&gt;\(\mathbf{w}\)&lt;/span&gt; is as yet unknown, but as we will see shortly will play an important role. For the time being this vector is going to act as a ruler that will allow us to measure how far on a particular side of the road some unknown sample &lt;span class="math"&gt;\(\mathbf{u}\)&lt;/span&gt; lies.&lt;/p&gt;
 &lt;div class="figure align-center"&gt;
-&lt;img alt="" src="decision_unknown.png" /&gt;
+&lt;img alt="" src="images/decision_unknown.png" /&gt;
 &lt;/div&gt;
 &lt;p&gt;The larger the projection of &lt;span class="math"&gt;\(\mathbf{u}\)&lt;/span&gt; onto &lt;span class="math"&gt;\(\mathbf{w}\)&lt;/span&gt; is then the further to the right of the median line the unknown sample lies. By setting some threshold &lt;span class="math"&gt;\(c\)&lt;/span&gt; we can form the following decision rules;&lt;/p&gt;
 &lt;div class="math"&gt;

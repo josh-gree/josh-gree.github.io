@@ -48,12 +48,12 @@
 <p>As is often the case with mathematical arguments the best strategy is to assume you already have the thing you want - the hope is that this assumption will give you what you want! Clearly this is a very circular argument however this is how we will proceed...</p>
 <p>We are going to assume that their exists some median line which separates the positive samples from the negative samples, we will think of this as the centre of a road such that the positive samples are on the right hand side and the negative samples are on the left.</p>
 <div class="figure align-center">
-<img alt="" src="./median_and_margin.png" />
+<img alt="" src="images/median_and_margin.png" />
 </div>
 <p>The width of this road should be as large as possible - this is what gives us confidence in our decision rule since we are aiming for the largest separation of the two sets.</p>
 <p>Now we will introduce a vector <span class="math">\(\mathbf{w}\)</span> that will be constrained to be perpendicular to the median line of the road. The length of <span class="math">\(\mathbf{w}\)</span> is as yet unknown, but as we will see shortly will play an important role. For the time being this vector is going to act as a ruler that will allow us to measure how far on a particular side of the road some unknown sample <span class="math">\(\mathbf{u}\)</span> lies.</p>
 <div class="figure align-center">
-<img alt="" src="decision_unknown.png" />
+<img alt="" src="images/decision_unknown.png" />
 </div>
 <p>The larger the projection of <span class="math">\(\mathbf{u}\)</span> onto <span class="math">\(\mathbf{w}\)</span> is then the further to the right of the median line the unknown sample lies. By setting some threshold <span class="math">\(c\)</span> we can form the following decision rules;</p>
 <div class="math">
