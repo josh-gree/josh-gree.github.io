@@ -23,22 +23,192 @@
         
 
             <header>
-                <h1><a href="." id="site-title">My Blog </a> : <a href="./NN.html" id="page-title">An Introduction to the wonderful world of Neural Networks...</a></h1>
-<time datetime="2015-02-21T00:00:00">Sat 21 February 2015</time>            </header>
+                <h1><a href="." id="site-title">My Blog </a> : <a href="./SVM.html" id="page-title">An Introduction to the wonderful world of Support Vector Machines...</a></h1>
+<time datetime="2015-02-13T00:00:00">Fri 13 February 2015</time>            </header>
 
             <article>
-                            </article>
-                <section id="article-list">
-                    <h2>All posts</h2>
-                    <ol>
-        
-
- 
-            <!-- <li><a href="./SVM.html" rel="bookmark" title="Permalink to An Introduction to the wonderful world of Support Vector Machines...">An Introduction to the wonderful world of Support Vector Machines...</a></li> -->
-            <dt>Fri 13 February 2015</dt>
-            <dd><a href='./SVM.html'>An Introduction to the wonderful world of Support Vector Machines...</a></dd>
-    </ol>
-    </section><!-- #article-list -->
+                <div class="section" id="what-is-the-problem-we-would-like-svm-s-to-solve">
+<h2>What is the problem we would like SVM's to solve?</h2>
+<p>So you have some friends, they comes in two types - people who you trust to look after your cat and people who under no circumstances should be left alone with your cat. You acquire a new friend but how are you going to tell if they should be trusted with your cat?! You decide to give your current friends some ratings on various personal qualities;</p>
+<ul class="simple">
+<li>How likely are they to wear odd socks? (a probability),</li>
+<li>To what extent do they appreciate the comedic genius of Borat? (on a scale of 10).</li>
+</ul>
+<p>These qualities where chosen since as everyone knows odd sock wearing fans of Borat make for very happy cats.</p>
+<div class="figure align-center">
+<img alt="" src="cat_happiness.jpg" />
+</div>
+<p>Now the question we want to answer is how do we decide if we trust our new friend? We want a decision rule that is sensitive to the actual values of our friends personal qualities, which we are confident will not make our cat sad by introducing it to an unsuitable character!</p>
+<p>The above discussion is my attempt at being light-hearted, probably a failure but hey ho! The basic elements of the problem we would like to solve with SVM's are there but we need to put them on a slightly more mathematical foundation...</p>
+</div>
+<div class="section" id="a-little-bit-more-mathematical">
+<h2>A little bit more mathematical...</h2>
+<p>In all that follows we will work in <span class="math">\(\mathbb{R}^2\)</span> but the arguments transfer to higher dimensions.</p>
+<p>The first thing we will do is form a vector <span class="math">\(\mathbf{x}_i\)</span> for each sample that will contain the values which we have decided to use for the purpose of discrimination. We need to define two sets; one for positive samples <span class="math">\(X^+\)</span>  and one for negative samples <span class="math">\(X^-\)</span>. Our goal is to decide which set an unknown sample <span class="math">\(\mathbf{u}\)</span> belongs to.</p>
+<p>As is often the case with mathematical arguments the best strategy is to assume you already have the thing you want - the hope is that this assumption will give you what you want! Clearly this is a very circular argument however this is how we will proceed...</p>
+<p>We are going to assume that their exists some median line which separates the positive samples from the negative samples, we will think of this as the centre of a road such that the positive samples are on the right hand side and the negative samples are on the left.</p>
+<div class="figure align-center">
+<img alt="" src="./median_and_margin.png" />
+</div>
+<p>The width of this road should be as large as possible - this is what gives us confidence in our decision rule since we are aiming for the largest separation of the two sets.</p>
+<p>Now we will introduce a vector <span class="math">\(\mathbf{w}\)</span> that will be constrained to be perpendicular to the median line of the road. The length of <span class="math">\(\mathbf{w}\)</span> is as yet unknown, but as we will see shortly will play an important role. For the time being this vector is going to act as a ruler that will allow us to measure how far on a particular side of the road some unknown sample <span class="math">\(\mathbf{u}\)</span> lies.</p>
+<div class="figure align-center">
+<img alt="" src="decision_unknown.png" />
+</div>
+<p>The larger the projection of <span class="math">\(\mathbf{u}\)</span> onto <span class="math">\(\mathbf{w}\)</span> is then the further to the right of the median line the unknown sample lies. By setting some threshold <span class="math">\(c\)</span> we can form the following decision rules;</p>
+<div class="math">
+\begin{align*}
+\mathbf{u}\cdot\mathbf{w} &amp;\ge c \implies \mathbf{u} \in X^+ \\
+\mathbf{u}\cdot\mathbf{w} &amp;\le c \implies \mathbf{u} \in X^-
+\end{align*}
+</div>
+<p>Which is equivalent to the following where <span class="math">\(b = -c\)</span>;</p>
+<div class="math">
+\begin{align*}
+\mathbf{u}\cdot\mathbf{w} +b &amp;\ge 0 \implies \mathbf{u} \in X^+ \\
+\mathbf{u}\cdot\mathbf{w} +b &amp;\le 0 \implies \mathbf{u} \in X^-
+\end{align*}
+</div>
+<p>So at this point we would like to find a particular <span class="math">\(\mathbf{w}\)</span> and <span class="math">\(b\)</span> such that the width of the road is as large as possible. Unfortunately we are not yet in a position to do this - we need to impose some further constraints. We have already constrained <span class="math">\(\mathbf{w}\)</span> to be perpendicular to the median of the road but this is not quite enough. In order to impose some more constraints we are going to say that the following must be true for known samples (the friends we already know whether to trust with our cat);</p>
+<div class="math">
+\begin{align*}
+\mathbf{x}^+\cdot\mathbf{w} +b &amp;\ge 1  \\
+\mathbf{x}^-\cdot\mathbf{w} +b &amp;\le -1
+\end{align*}
+</div>
+<p>Now it would be great if we could have a single constraint rather than the two we have just created, well with the judicial introduction of yet another variable we can do just that. We will define the following;</p>
+<div class="math">
+\begin{equation*}
+   y_i =  \left \{
+\begin{array}{lr}
+  1 &amp; : x_i \in X^+\\
+  -1 &amp; : x_i \in X^-
+\end{array}
+\right.
+\end{equation*}
+</div>
+<p>With a little bit of thought it should become crystal clear (it took me a while...) that we can remove the dependence on the particular type of sample from the two constraints by multiplying by this new variable - leaving us with the following constraint that should be satisfied for all known samples;</p>
+<div class="math">
+\begin{equation*}
+y_i(\mathbf{x}_i\cdot\mathbf{w} +b) - 1 \ge 0
+\end{equation*}
+</div>
+<p>We are going to go one step further and say that for any samples that lie on the edge of the road the above constraint is going to become an equality constraint;</p>
+<div class="math">
+\begin{equation*}
+y_i(\mathbf{x}_i\cdot\mathbf{w} +b) - 1 = 0
+\end{equation*}
+</div>
+<p>So we have a set of constraints and we have loosely talked about some quantity (the width of the road) that we would like to maximise. In order to continue we need to find some expression for the width of the road.</p>
+<div class="figure align-center">
+<img alt="" src="images/road_width.png" />
+</div>
+<p>Lets look at two known samples, one positive <span class="math">\(\mathbf{x}^+\)</span> and the other negative <span class="math">\(\mathbf{x}^-\)</span>, that lie smack bang on the edge of the road. If we had some kind of ruler we could use the difference between the two samples <span class="math">\(\mathbf{x}^+ - \mathbf{x}^-\)</span> to calculate the width of the road. Well we have just such a ruler the vector <span class="math">\(\mathbf{w}\)</span>. All we need to do is normalise this vector and project the difference between the two samples onto it to find the width of the road;</p>
+<div class="math">
+\begin{align*}
+width &amp;= (\mathbf{x}^+ - \mathbf{x}^-)\cdot \frac{\mathbf{w}}{\|\mathbf{w}\|} \\
+          &amp;= \mathbf{x}^+ \cdot \frac{\mathbf{w}}{\|\mathbf{w}\|} - \mathbf{x}^- \cdot \frac{\mathbf{w}}{\|\mathbf{w}\|}
+\end{align*}
+</div>
+<p>Now with a little bit of help from our constraints (for sample on the edge of the road) we see that;</p>
+<div class="math">
+\begin{align*}
+\mathbf{x}^+\cdot\mathbf{w} +b - 1 = 0 &amp;\implies \mathbf{x}^+\cdot\mathbf{w} =1-b \\
+\mathbf{x}^-\cdot\mathbf{w} -b - 1 = 0 &amp;\implies \mathbf{x}^+\cdot\mathbf{w} =1+b
+\end{align*}
+</div>
+<p>Which gives us;</p>
+<div class="math">
+\begin{align*}
+width &amp;= \frac{1-b}{\|\mathbf{w}\|} + \frac{1+b}{\|\mathbf{w}\|} \\
+      &amp;= \frac{2}{\|\mathbf{w}\|}
+\end{align*}
+</div>
+<p>A remarkable result - the width of our road is completely determined by the length of <span class="math">\(\mathbf{w}\)</span>. So we nearly have everything we need to solve our problem.</p>
+<p>However we need to perform some more mathematical trickery, our objective function (the quantity we want to maximise) is not a nice easy optimisation problem.</p>
+<div class="math">
+\begin{align*}
+\max_{\mathbf{w}} \frac{2}{\|\mathbf{w}\|} &amp;= \max_{\mathbf{w}} \frac{1}{\|\mathbf{w}\|} \\
+                                           &amp;= \min_{\mathbf{w}} \|\mathbf{w}\| \\
+                                           &amp;= \min_{\mathbf{w}} \frac{1}{2}\|\mathbf{w}\|^2
+\end{align*}
+</div>
+<p>This new minimisation problem has some very nice properties which make SVM's such a powerful technique. It is known as a convex optimisation problem and has the beautiful property that it has a single global minimum!</p>
+<p>So we want to find;</p>
+<div class="math">
+\begin{equation*}
+\min_{\mathbf{w}} \frac{1}{2}\|\mathbf{w}\|^2 \quad \text{subject to} \quad  y_i(\mathbf{x}_i\cdot\mathbf{w} +b) - 1 = 0
+\end{equation*}
+</div>
+</div>
+<div class="section" id="optimisation">
+<h2>Optimisation</h2>
+<p>Whenever we have some function we wish to minimise along with a set of constraints we call upon one of the greats - Lagrange. The Lagrangian is a new function that we will create from our objective and constraints for which we shall find a minimum. Our Lagrangian function will be;</p>
+<div class="math">
+\begin{equation*}
+L = \frac{1}{2}\|\mathbf{w}\|^2 - \sum_i a_i(y_i(\mathbf{x}_i\cdot\mathbf{w} +b) - 1)
+\end{equation*}
+</div>
+<p>To find a minimum of this function we need to find where its derivatives (with respect to anything that varies - in our case <span class="math">\(\mathbf{w}\)</span> and <span class="math">\(b\)</span>) vanish. Derivatives with respect to vectors can sometimes seem a little daunting but the best course of action is to write the Lagrangian out in component form and then calculate the derivatives - once you do this you will see that;</p>
+<div class="math">
+\begin{align*}
+\frac{\partial L}{\partial \mathbf{w}} &amp;= \mathbf{w} - \sum_i a_i y_i x_i\\
+\frac{\partial L}{\partial b} &amp;= -\sum_i a_i y_i
+\end{align*}
+</div>
+<p>If we set these derivatives equal to zero we obtain the following relations;</p>
+<div class="math">
+\begin{align*}
+\mathbf{w} &amp;= \sum_i a_i y_i x_i\\
+0 &amp;= \sum_i a_i y_i
+\end{align*}
+</div>
+<p>The first of these two relations tells us something fairly interesting about our problem - it tells us that the vector <span class="math">\(\mathbf{w}\)</span> we are looking for is a linear combination of the samples we already know. The second relation will be of particular use as we dig further into this problem and find the most useful property of the SVM method.</p>
+<p>Now that we have an expression for <span class="math">\(\mathbf{w}\)</span> in terms of our samples we are going to take another look at the Lagrangian, except this time we are going to remove (using our new relation) all reference to <span class="math">\(\mathbf{w}\)</span>. By substitution we see a new form of the Lagrangian;</p>
+<div class="math">
+\begin{equation*}
+L = \frac{1}{2}\sum_i a_i y_i x_i \cdot \sum_j a_j y_j x_j - \sum_i a_i y_i x_i \cdot \sum_j a_j y_j x_j - b\sum_i a_i y_i + \sum_i a_i
+\end{equation*}
+</div>
+<p>The second relation we obtained from our derivatives shows us that the third term in this expression is zero, and we notice that the first two terms are multiples of the same thing. This leaves us with the following;</p>
+<div class="math">
+\begin{equation*}
+L = \sum_i a_i - \frac{1}{2}\sum_i \sum_j a_i a_j y_i y_j x_i \cdot x_j
+\end{equation*}
+</div>
+<p>This Lagrangian highlights the most significant feature of SVM's - the optimization problem is completely determined by the dot product of pairs of known samples. This allows for solving decision problems that are not linearly separable in the space spanned by the quantities we choose to use for discrimination. All we need to know is how to calculate dot products in some transformed space in which the samples are in fact linearly separable. This is done by constructing what are known as kernel functions that give us the value of the dot product in some higher dimensional space using only the known samples without the need to even know how they have been transformed.</p>
+</div>
+<div class="section" id="final-thoughts">
+<h2>Final thoughts...</h2>
+<p>BLAH</p>
+</div>
+<script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: 'center'," +
+        "    displayIndent: '0em'," +
+        "    showMathMenu: true," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'black ! important'} }, linebreaks: { automatic: false, width: 'container' }" +
+        "    } " +
+        "}); ";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>            </article>
 
         <footer>
                 <p id="theme-credit"><a href="./archives.html">Archives</a></p>
