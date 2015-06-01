@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	 	<title>Josh's Blogspace - Blog Posts</title>
+	 	<link href="../css/style.css" type="text/css" rel="stylesheet"/>
+	 	<script type="text/javascript" src="../d3/d3.min.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+            var data;
+            d3.tsv("posts.csv",function(d){
+                d = d.reverse()
+                data = d;
+                d3.select("#posts").selectAll("h2").data(data).enter().append("h4").append("a").attr("href",function(d){return d.Location}).text(function(d){return d.Title + " - " +d.Date;});
+            });
+        </script>
+		<div id="header">
+		    <h1><a href="..">Josh's Blogspace</a> - Blog Posts</h1>
+		    <div id="nav"> 
+		        <a href="../who_am_i">Who am I?</a> - <a href=".">Blog Posts</a> - <a href="https://github.com/josh-gree/">My Github</a>
+		    </div>
+		</div>
+		<div id="posts"></div>
+		<div id="links">
+		<!-- <a href="post_310515.html">Hello World - 31/05/15</a><br /><br /> -->
+		</div>
+	</body>
+</html>
